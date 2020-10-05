@@ -28,6 +28,11 @@ const routes = [
     Component: lazy(() => import('pages/dashboard/crypto')),
     exact: true,
   },
+  {
+    path: '/settings/profile',
+    Component: lazy(() => import('pages/user/profileEdit')),
+    exact: true,
+  },
 
   // Ecommerce
   {

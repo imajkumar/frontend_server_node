@@ -12,8 +12,8 @@ const STORED_SETTINGS = storedSettings => {
 
 const initialState = {
   ...STORED_SETTINGS({
-    authProvider: 'firebase', // firebase, jwt
-    logo: 'Clean UI Pro',
+    authProvider: 'jwt', // firebase, jwt
+    logo: 'member',
     locale: 'en-US',
     isSidebarOpen: false,
     isSupportChatOpen: false,
@@ -28,15 +28,15 @@ const initialState = {
     primaryColor: '#4b7cf3',
     leftMenuWidth: 256,
     isMenuUnfixed: false,
-    isMenuShadow: false,
-    isTopbarFixed: false,
+    isMenuShadow: true,
+    isTopbarFixed: true,
     isGrayTopbar: false,
     isContentMaxWidth: false,
     isAppMaxWidth: false,
     isGrayBackground: false,
     isCardShadow: true,
-    isSquaredBorders: false,
-    isBorderless: false,
+    isSquaredBorders: true,
+    isBorderless: true,
   }),
 }
 

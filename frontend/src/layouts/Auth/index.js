@@ -3,8 +3,6 @@ import { connect } from 'react-redux'
 import { Layout } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import classNames from 'classnames'
-import Sidebar from 'components/cleanui/layout/Sidebar'
-import SupportChat from 'components/cleanui/layout/SupportChat'
 import style from './style.module.scss'
 
 const mapStateToProps = ({ settings }) => ({
@@ -27,9 +25,7 @@ const AuthLayout = ({
 }) => {
   return (
     <Layout>
-      <Layout.Content>
-        <Sidebar />
-        <SupportChat />
+      <Layout.Content>        
         <div
           className={classNames(`${style.container}`, {
             cui__layout__squaredBorders: isSquaredBorders,
