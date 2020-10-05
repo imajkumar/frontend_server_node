@@ -37,7 +37,7 @@ export default {
       const user = await attemptLogin(args);
       let tokens = await issueToken(user);
       return {
-        id:5,
+        id:1,
         avatar:"",
         name:"Ajay Kumar",
         role:"admin",
