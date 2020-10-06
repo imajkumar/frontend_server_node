@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 import * as db from '../../databaseMysql';
 import { hash, compare } from "bcryptjs";
 import { UserInputError } from "apollo-server-express";
-import { registerValidate, loginValidate } from "../validators";
+import { registerValidate, loginValidate,userUpdateValidate } from "../validators";
 
 export default {
   Query: {
@@ -53,15 +53,8 @@ export default {
   Mutation: {
     register: async (root, args, { req }, info) => {
      await Joi.validate(args, registerValidate, { abortEarly: false });
-      // const user = await User.create(args);
-      // let tokens = await issueToken(user);
-     // const userA = await db.users.findOne({ where: { args } });
-
-      const user = await db.users.create(args);
-
-      let tokens = await issueToken(user);
-
-   
+     const user = await db.users.create(args);
+     let tokens = await issueToken(user);   
       return {
         user,
         ...tokens
@@ -69,5 +62,18 @@ export default {
       };
 
     },
+    updateProfile:async (root,args,{req},info) =>{
+      await Joi.validate(args, userUpdateValidate, { abortEarly: false });
+      
+      const user = await db.users.update({ name: args.name }, {
+        where: {
+          email: args.email
+        }
+      });
+      return{
+        name:args.name
+      }
+
+    }
   },
 };

@@ -2,6 +2,45 @@ import apiClient from 'services/axios'
 import store from 'store'
 import { createApolloFetch } from 'apollo-fetch';
 
+
+// updateProfle
+export async function updateProfle(usrName, password) {
+  console.log(usrName)
+  console.log(password)
+ 
+  const fetch = createApolloFetch({
+   uri: 'http://localhost:4000/graphql',
+ });
+ 
+ return fetch({
+   query: `{
+     login(username:"imajkumar",password:"Ajay@9711"){
+      id,
+      avatar,
+      name,
+      role
+      email
+      token
+      refreshToken,
+     }
+   }`,
+ }).then(response => {
+   if (response) {
+     const { refreshToken } = response.data.login
+     if (refreshToken) {
+       store.set('accessToken', refreshToken)
+     }
+     return response.data.login
+   }
+   return false
+ })
+ .catch(err => console.log(err))
+ 
+ 
+  
+ 
+ }
+// updateProfle
 export async function login(email, password) {
  console.log(email)
  console.log(password)

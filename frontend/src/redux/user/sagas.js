@@ -1,97 +1,122 @@
-import { all, takeEvery, put, call, select } from 'redux-saga/effects'
+import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { notification } from 'antd'
 import { history } from 'index'
-import * as firebase from 'services/firebase'
 import * as jwt from 'services/jwt'
 import actions from './actions'
 
-const mapAuthProviders = {
-  firebase: {
-    login: firebase.login,
-    register: firebase.register,
-    currentAccount: firebase.currentAccount,
-    logout: firebase.logout,
-  },
-  jwt: {
-    login: jwt.login,
-    register: jwt.register,
-    currentAccount: jwt.currentAccount,
-    logout: jwt.logout,
-  },
-}
 
-export function* LOGIN({ payload }) {
-  const { email, password } = payload
-  yield put({
+// UPDATE_PROFILE
+export function* UPDATE_PROFILE( { payload } )
+{
+  const { usrEmail, usrName } = payload
+  yield put( {
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
-  })
-  const { authProvider: autProviderName } = yield select(state => state.settings)
-  const success = yield call(mapAuthProviders[autProviderName].login, email, password)
-  if (success) {
-    yield put({
+  } )
+  const success = yield call( jwt.updateProfle, usrEmail, usrName )
+  if ( success )
+  {
+    yield put( {
       type: 'user/LOAD_CURRENT_ACCOUNT',
-    })
-    yield history.push('/')
-    notification.success({
+    } )
+    yield history.push( '/settings/profile' )
+    notification.success( {
+      message: 'Profile Updated',
+      description: 'You have successfully updated in!',
+    } )
+  }
+  if ( !success )
+  {
+    yield put( {
+      type: 'user/SET_STATE',
+      payload: {
+        loading: false,
+      },
+    } )
+  }
+}
+// UPDATE_PROFILE//
+export function* LOGIN( { payload } )
+{
+  const { email, password } = payload
+  yield put( {
+    type: 'user/SET_STATE',
+    payload: {
+      loading: true,
+    },
+  } )
+  const success = yield call( jwt.login, email, password )
+  if ( success )
+  {
+    yield put( {
+      type: 'user/LOAD_CURRENT_ACCOUNT',
+    } )
+    yield history.push( '/' )
+    notification.success( {
       message: 'Logged In',
       description: 'You have successfully logged in!',
-    })
+    } )
   }
-  if (!success) {
-    yield put({
+  if ( !success )
+  {
+    yield put( {
       type: 'user/SET_STATE',
       payload: {
         loading: false,
       },
-    })
+    } )
   }
 }
 
-export function* REGISTER({ payload }) {
+export function* REGISTER( { payload } )
+{
   const { email, password, name } = payload
-  yield put({
+  yield put( {
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
-  })
-  const { authProvider } = yield select(state => state.settings)
-  const success = yield call(mapAuthProviders[authProvider].register, email, password, name)
-  if (success) {
-    yield put({
+  } )
+
+  const success = yield call( jwt.register, email, password, name )
+  if ( success )
+  {
+    yield put( {
       type: 'user/LOAD_CURRENT_ACCOUNT',
-    })
-    yield history.push('/')
-    notification.success({
+    } )
+    yield history.push( '/' )
+    notification.success( {
       message: 'Succesful Registered',
       description: 'You have successfully registered!',
-    })
+    } )
   }
-  if (!success) {
-    yield put({
+  if ( !success )
+  {
+    yield put( {
       type: 'user/SET_STATE',
       payload: {
         loading: false,
       },
-    })
+    } )
   }
 }
 
-export function* LOAD_CURRENT_ACCOUNT() {
-  yield put({
+export function* LOAD_CURRENT_ACCOUNT()
+{
+  yield put( {
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
-  })
-  const { authProvider } = yield select(state => state.settings)
-  const response = yield call(mapAuthProviders[authProvider].currentAccount)
-  if (response) {
+  } )
+
+  const response = yield call( jwt.currentAccount )
+  if ( response )
+  {
     const { id, email, name, avatar, role } = response
-    yield put({
+    yield put( {
       type: 'user/SET_STATE',
       payload: {
         id,
@@ -101,20 +126,21 @@ export function* LOAD_CURRENT_ACCOUNT() {
         role,
         authorized: true,
       },
-    })
+    } )
   }
-  yield put({
+  yield put( {
     type: 'user/SET_STATE',
     payload: {
       loading: false,
     },
-  })
+  } )
 }
 
-export function* LOGOUT() {
-  const { authProvider } = yield select(state => state.settings)
-  yield call(mapAuthProviders[authProvider].logout)
-  yield put({
+export function* LOGOUT()
+{
+
+  yield call( jwt.logout )
+  yield put( {
     type: 'user/SET_STATE',
     payload: {
       id: '',
@@ -125,15 +151,17 @@ export function* LOGOUT() {
       authorized: false,
       loading: false,
     },
-  })
+  } )
 }
 
-export default function* rootSaga() {
-  yield all([
-    takeEvery(actions.LOGIN, LOGIN),
-    takeEvery(actions.REGISTER, REGISTER),
-    takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
-    takeEvery(actions.LOGOUT, LOGOUT),
+export default function* rootSaga()
+{
+  yield all( [
+    takeEvery( actions.LOGIN, LOGIN ),
+    takeEvery( actions.REGISTER, REGISTER ),
+    takeEvery( actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT ),
+    takeEvery( actions.LOGOUT, LOGOUT ),
+    takeEvery( actions.UPDATE_PROFILE, UPDATE_PROFILE ),
     LOAD_CURRENT_ACCOUNT(), // run once on app load to check user auth
-  ])
+  ] )
 }

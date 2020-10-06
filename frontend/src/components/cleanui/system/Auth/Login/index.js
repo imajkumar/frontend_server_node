@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Input, Button, Radio, Form, Tooltip } from 'antd'
+import { Input, Button,  Form } from 'antd'
 import { Link } from 'react-router-dom'
 import style from '../style.module.scss'
 
@@ -11,7 +11,7 @@ const mapStateToProps = ({ user, settings, dispatch }) => ({
   logo: settings.logo,
 })
 
-const Login = ({ dispatch, user, authProvider, logo }) => {
+const Login = ({ dispatch, user, logo }) => {
   const onFinish = values => {
     dispatch({
       type: 'user/LOGIN',
@@ -22,16 +22,7 @@ const Login = ({ dispatch, user, authProvider, logo }) => {
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo)
   }
-
-  const changeAuthProvider = value => {
-    dispatch({
-      type: 'settings/CHANGE_SETTING',
-      payload: {
-        setting: 'authProvider',
-        value,
-      },
-    })
-  }
+  
 
   return (
     <div>
@@ -51,30 +42,14 @@ const Login = ({ dispatch, user, authProvider, logo }) => {
       <div className={`card ${style.container}`}>
         <div className="text-dark font-size-24 mb-3">
           <strong>Sign in to your account</strong>
-        </div>
-        <div className="mb-4">
-          <Radio.Group onChange={e => changeAuthProvider(e.target.value)} value={authProvider}>
-            <Radio value="firebase">Firebase</Radio>
-            <Radio value="jwt">JWT</Radio>
-            <Tooltip title="Read Docs Guide">
-              <Radio value="Auth0" disabled>
-                Auth0
-              </Radio>
-            </Tooltip>
-            <Tooltip title="Read Docs Guide">
-              <Radio value="Strapi" disabled>
-                Strapi
-              </Radio>
-            </Tooltip>
-          </Radio.Group>
-        </div>
+        </div>       
         <Form
           layout="vertical"
           hideRequiredMark
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           className="mb-4"
-          initialValues={{ email: 'demo@sellpixels.com', password: 'demo123' }}
+          // initialValues={{ email: 'demo@sellpixels.com', password: 'demo123' }}
         >
           <Form.Item
             name="email"

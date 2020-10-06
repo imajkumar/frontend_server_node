@@ -30,3 +30,10 @@ export const registerValidate = Joi.object().keys({
   username,
   password,
 });
+
+export const userUpdateValidate = Joi.object().keys({
+  email,
+  name,  
+});
+
+

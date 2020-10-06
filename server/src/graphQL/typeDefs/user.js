@@ -16,6 +16,11 @@ export default gql`
       username: String!
       password: String!
     ): Auth!
+    
+    updateProfile(
+      email:String!
+      name:String!      
+    ):User
   }
 
   type User {
